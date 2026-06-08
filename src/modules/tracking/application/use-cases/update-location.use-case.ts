@@ -1,0 +1,34 @@
+import { inject, injectable } from "tsyringe";
+import { ILocationStreamRepository } from "../../domain/repositories/i-location-stream.repository";
+import { LocationEntity } from "../../domain/entities/location.entity";
+import { Coordinate } from "../../domain/value-objects/coordinate.value-object";
+
+export interface UpdateLocationDTO {
+  deviceId: string;
+  userId: string;
+  lat: number;
+  lng: number;
+  speed: number;
+}
+
+@injectable()
+export class UpdateLocationUseCase {
+  constructor(
+    @inject("ILocationStreamRepository")
+    private locationRepo: ILocationStreamRepository
+  ) {}
+
+  async execute(dto: UpdateLocationDTO): Promise<void> {
+    const coordinate = new Coordinate(dto.lat, dto.lng);
+
+    const locationEntity = new LocationEntity({
+      deviceId: dto.deviceId,
+      userId: dto.userId,
+      coordinate: coordinate,
+      speed: dto.speed,
+      updatedAt: new Date(),
+    });
+
+    await this.locationRepo.saveLiveLocation(locationEntity);
+  }
+}

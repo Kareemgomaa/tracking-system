@@ -4,8 +4,9 @@ export interface LocationProps {
   id?: string;
   deviceId: string;
   userId: string;
-  coordinate: Coordinate; 
+  coordinate: Coordinate;
   speed: number;
+  address?: string;
   updatedAt: Date;
 }
 
@@ -15,6 +16,7 @@ export class LocationEntity {
   public readonly userId: string;
   public readonly coordinate: Coordinate;
   public readonly speed: number;
+  public readonly address?: string;
   public readonly updatedAt: Date;
 
   constructor(props: LocationProps) {
@@ -23,6 +25,7 @@ export class LocationEntity {
     this.userId = props.userId;
     this.coordinate = props.coordinate;
     this.speed = props.speed;
+    this.address = props.address;
     this.updatedAt = props.updatedAt;
   }
 }

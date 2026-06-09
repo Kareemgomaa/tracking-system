@@ -12,6 +12,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
+  GOOGLE_MAPS_API_KEY: z.string().min(1, "Google Maps API Key is required"),
 });
 
 const envParse = envSchema.safeParse(process.env);

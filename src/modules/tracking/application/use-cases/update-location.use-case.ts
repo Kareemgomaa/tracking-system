@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { ILocationStreamRepository } from "../../domain/repositories/i-location-stream.repository";
 import { LocationEntity } from "../../domain/entities/location.entity";
 import { Coordinate } from "../../domain/value-objects/coordinate.value-object";
+import { GoogleMapsGateway } from "../../infrastructure/gateways/google-maps.gateway";
 
 export interface UpdateLocationDTO {
   deviceId: string;
@@ -13,19 +14,27 @@ export interface UpdateLocationDTO {
 
 @injectable()
 export class UpdateLocationUseCase {
+  private googleMapsGateway = new GoogleMapsGateway();
+
   constructor(
     @inject("ILocationStreamRepository")
-    private locationRepo: ILocationStreamRepository
+    private locationRepo: ILocationStreamRepository,
   ) {}
 
   async execute(dto: UpdateLocationDTO): Promise<void> {
     const coordinate = new Coordinate(dto.lat, dto.lng);
+
+    const address = await this.googleMapsGateway.getAddressFromCoords(
+      dto.lat,
+      dto.lng,
+    );
 
     const locationEntity = new LocationEntity({
       deviceId: dto.deviceId,
       userId: dto.userId,
       coordinate: coordinate,
       speed: dto.speed,
+      address: address,
       updatedAt: new Date(),
     });
 

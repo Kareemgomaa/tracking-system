@@ -13,6 +13,7 @@ export class SocketLocationStreamRepository implements ILocationStreamRepository
       lng: location.coordinate.lng,
       speed: location.speed,
       address: location.address,
+      postalCode: location.postalCode,
       updatedAt: location.updatedAt,
     };
 

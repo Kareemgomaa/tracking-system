@@ -8,11 +8,13 @@ const envSchema = z.object({
   PORT: z
     .string()
     .transform((val) => parseInt(val, 10))
-    .default(3000),
+    .default(5001),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
   GOOGLE_MAPS_API_KEY: z.string().min(1, "Google Maps API Key is required"),
+  RABBITMQ_URL: z.string().default("amqp://localhost:5672"),
+  MONGO_URI: z.string().min(1, "Mongo URI is required"),
 });
 
 const envParse = envSchema.safeParse(process.env);

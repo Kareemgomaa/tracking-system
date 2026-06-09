@@ -7,6 +7,7 @@ export interface LocationProps {
   coordinate: Coordinate;
   speed: number;
   address?: string;
+  postalCode?: string | null;
   updatedAt: Date;
 }
 
@@ -17,6 +18,7 @@ export class LocationEntity {
   public readonly coordinate: Coordinate;
   public readonly speed: number;
   public readonly address?: string;
+  public readonly postalCode?: string | null;
   public readonly updatedAt: Date;
 
   constructor(props: LocationProps) {
@@ -26,6 +28,7 @@ export class LocationEntity {
     this.coordinate = props.coordinate;
     this.speed = props.speed;
     this.address = props.address;
+    this.postalCode = props.postalCode;
     this.updatedAt = props.updatedAt;
   }
 }

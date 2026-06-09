@@ -19,6 +19,7 @@ export interface UpdateLocationResult {
   lng: number;
   speed: number;
   address: string;
+  postalCode: string | null;
   updatedAt: Date;
 }
 
@@ -34,7 +35,7 @@ export class UpdateLocationUseCase {
   async execute(dto: UpdateLocationDTO): Promise<UpdateLocationResult> {
     const coordinate = new Coordinate(dto.lat, dto.lng);
 
-    const address = await this.googleMapsGateway.getAddressFromCoords(
+    const geoData = await this.googleMapsGateway.getAddressFromCoords(
       dto.lat,
       dto.lng,
     );
@@ -44,7 +45,8 @@ export class UpdateLocationUseCase {
       userId: dto.userId,
       coordinate: coordinate,
       speed: dto.speed,
-      address: address,
+      address: geoData.address,
+      postalCode: geoData.postalCode,
       updatedAt: new Date(),
     });
 
@@ -56,7 +58,8 @@ export class UpdateLocationUseCase {
       lat: dto.lat,
       lng: dto.lng,
       speed: dto.speed,
-      address: address,
+      address: geoData.address,
+      postalCode: geoData.postalCode,
       updatedAt: locationEntity.updatedAt,
     };
   }

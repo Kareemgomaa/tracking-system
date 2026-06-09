@@ -12,6 +12,16 @@ export interface UpdateLocationDTO {
   speed: number;
 }
 
+export interface UpdateLocationResult {
+  deviceId: string;
+  userId: string;
+  lat: number;
+  lng: number;
+  speed: number;
+  address: string;
+  updatedAt: Date;
+}
+
 @injectable()
 export class UpdateLocationUseCase {
   private googleMapsGateway = new GoogleMapsGateway();
@@ -21,7 +31,7 @@ export class UpdateLocationUseCase {
     private locationRepo: ILocationStreamRepository,
   ) {}
 
-  async execute(dto: UpdateLocationDTO): Promise<void> {
+  async execute(dto: UpdateLocationDTO): Promise<UpdateLocationResult> {
     const coordinate = new Coordinate(dto.lat, dto.lng);
 
     const address = await this.googleMapsGateway.getAddressFromCoords(
@@ -39,5 +49,15 @@ export class UpdateLocationUseCase {
     });
 
     await this.locationRepo.saveLiveLocation(locationEntity);
+
+    return {
+      deviceId: dto.deviceId,
+      userId: dto.userId,
+      lat: dto.lat,
+      lng: dto.lng,
+      speed: dto.speed,
+      address: address,
+      updatedAt: locationEntity.updatedAt,
+    };
   }
 }

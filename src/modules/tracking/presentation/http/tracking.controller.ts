@@ -30,11 +30,12 @@ export class TrackingController {
       }
 
       const useCase = container.resolve(UpdateLocationUseCase);
-      await useCase.execute(parseResult.data);
+      const result = await useCase.execute(parseResult.data);
 
       res.status(200).json({
         success: true,
         message: "Live location updated successfully",
+        data: result,
       });
     } catch (error) {
       next(error);

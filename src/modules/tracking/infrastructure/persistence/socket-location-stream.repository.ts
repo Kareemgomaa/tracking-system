@@ -16,6 +16,9 @@ export class SocketLocationStreamRepository implements ILocationStreamRepository
       postalCode: location.postalCode,
       updatedAt: location.updatedAt,
     };
+    console.log(
+      `[Address Resolved]: ${location.address} | Postal Code: ${location.postalCode}`,
+    );
 
     console.log(
       `[Socket Stream] Broadcasting live location for device: ${location.deviceId}`,

@@ -14,7 +14,10 @@ const startMicroservice = async () => {
       await mongoose.connect(env.MONGO_URI, { serverSelectionTimeoutMS: 5000 });
       console.log("Database connected successfully to Tracking DB.");
     } catch (dbError) {
-      console.warn("MongoDB connection failed, continuing without database:", (dbError as Error).message);
+      console.warn(
+        "MongoDB connection failed, continuing without database:",
+        (dbError as Error).message,
+      );
     }
 
     const server = http.createServer(app);
@@ -23,7 +26,10 @@ const startMicroservice = async () => {
     try {
       await RabbitMQConsumer.init(env.RABBITMQ_URL);
     } catch (mqError) {
-      console.warn("RabbitMQ connection failed, continuing without queue:", (mqError as Error).message);
+      console.warn(
+        "RabbitMQ connection failed, continuing without queue:",
+        (mqError as Error).message,
+      );
     }
 
     server.listen(env.PORT, () => {

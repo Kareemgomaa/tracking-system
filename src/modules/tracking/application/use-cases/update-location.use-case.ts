@@ -25,11 +25,11 @@ export interface UpdateLocationResult {
 
 @injectable()
 export class UpdateLocationUseCase {
-  private googleMapsGateway = new GoogleMapsGateway();
-
   constructor(
     @inject("ILocationStreamRepository")
     private locationRepo: ILocationStreamRepository,
+    @inject(GoogleMapsGateway)
+    private googleMapsGateway: GoogleMapsGateway
   ) {}
 
   async execute(dto: UpdateLocationDTO): Promise<UpdateLocationResult> {

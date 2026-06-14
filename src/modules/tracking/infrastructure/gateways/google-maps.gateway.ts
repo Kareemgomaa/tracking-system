@@ -1,6 +1,8 @@
+import { injectable } from "tsyringe";
 import axios from "axios";
 import { env } from "../../../../common/config/env";
 
+@injectable()
 export class GoogleMapsGateway {
   private readonly apiKey = env.GOOGLE_MAPS_API_KEY;
 

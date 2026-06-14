@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { container } from "tsyringe";
+import { JsonController, Post, Body, HttpCode } from "routing-controllers";
+import { injectable, inject } from "tsyringe";
 import { z } from "zod";
 import { UpdateLocationUseCase } from "../../application/use-cases/update-location.use-case";
 import { ValidationError } from "../../../../common/errors/validation.error";
@@ -12,33 +12,32 @@ const updateLocationSchema = z.object({
   speed: z.number().min(0),
 });
 
+@injectable()
+@JsonController("/api/v1/tracking")
 export class TrackingController {
-  async updateLocation(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const parseResult = updateLocationSchema.safeParse(req.body);
-      if (!parseResult.success) {
-        const formattedErrors = parseResult.error.issues.map((issue) => ({
-          message: issue.message,
-          field: issue.path.join("."),
-        }));
+  constructor(
+    @inject(UpdateLocationUseCase) private updateLocationUseCase: UpdateLocationUseCase
+  ) {}
 
-        throw new ValidationError(formattedErrors);
-      }
+  @Post("/live")
+  @HttpCode(200)
+  async updateLocation(@Body() body: any) {
+    const parseResult = updateLocationSchema.safeParse(body);
 
-      const useCase = container.resolve(UpdateLocationUseCase);
-      const result = await useCase.execute(parseResult.data);
-
-      res.status(200).json({
-        success: true,
-        message: "Live location updated successfully",
-        data: result,
-      });
-    } catch (error) {
-      next(error);
+    if (!parseResult.success) {
+      const formattedErrors = parseResult.error.issues.map((issue) => ({
+        message: issue.message,
+        field: issue.path.join("."),
+      }));
+      throw new ValidationError(formattedErrors);
     }
+
+    const result = await this.updateLocationUseCase.execute(parseResult.data);
+
+    return {
+      success: true,
+      message: "Live location updated successfully",
+      data: result,
+    };
   }
 }
